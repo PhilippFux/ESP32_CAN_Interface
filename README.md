@@ -34,7 +34,7 @@ Which hardware components and software are needed and how to install them
 
 ### Connecting the hardware
 
-![](https://github.com/PhilippFux/ESP32_CAN_Interface.git/circuit_diagram.PNG)
+![](https://github.com/PhilippFux/ESP32_CAN_Interface/blob/master/circuit_diagram.PNG)
 
 
 
