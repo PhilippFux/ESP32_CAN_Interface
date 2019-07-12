@@ -12,6 +12,7 @@ Which uses the cannelloni protocol to send CAN-Frames via UDP over an Wi-Fi tunn
 * python-can support
 * CAN-FD support 
 * UDP support 
+* [Documentation](esp32-can-interface.readthedocs.io)
 
 ## Getting Started
 
