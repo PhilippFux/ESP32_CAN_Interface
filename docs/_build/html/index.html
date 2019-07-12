@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>CAN-Interface ESP32 &#8212; ESP32_CAN_Interface 11.07.2019 documentation</title>
+    <title>Welcome to ESP32_CAN_Interface’s documentation! &#8212; ESP32_CAN_Interface 11.07.2019 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -30,220 +30,18 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="can-interface-esp32">
-<span id="header-n0"></span><h1>CAN-Interface ESP32<a class="headerlink" href="#can-interface-esp32" title="Permalink to this headline">¶</a></h1>
-<div class="line-block">
-<div class="line">Wireless CAN-Interface for the ESP32 by Espressif.</div>
-<div class="line">Which uses the cannelloni protocol to send CAN-Frames via UDP over an
-Wi-Fi tunnel.</div>
+  <div class="section" id="welcome-to-esp32-can-interface-s-documentation">
+<h1>Welcome to ESP32_CAN_Interface’s documentation!<a class="headerlink" href="#welcome-to-esp32-can-interface-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
 </div>
-<div class="section" id="features">
-<span id="header-n3"></span><h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><p>CAN-Frame accumulation in a UDP-Package</p></li>
-<li><p>send and receive CAN-Frames from a connected CAN-Bus</p></li>
-<li><p>CAN Driver configuration</p></li>
-<li><p>Arbitration ID filter (hardware and software)</p></li>
-<li><p>python-can support</p></li>
-<li><p>CAN-FD support</p></li>
-<li><p>UDP support</p></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
-<div class="section" id="getting-started">
-<span id="header-n19"></span><h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
-<p>These following instructions will help you to install and run the
-project on the ESP32 for development and testing purposes.</p>
-<div class="section" id="prerequisites">
-<span id="header-n21"></span><h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
-<p>Which hardware components and software are needed and how to install
-them</p>
-<div class="section" id="hardware-components">
-<span id="header-n23"></span><h4>Hardware components<a class="headerlink" href="#hardware-components" title="Permalink to this headline">¶</a></h4>
-<ul class="simple">
-<li><p>ESP32 by Espressif</p></li>
-<li><p>CAN-Transceiver</p></li>
-<li><p>cables</p></li>
-<li><p>D-SUB connector (male)</p></li>
-</ul>
-</div>
-<div class="section" id="software">
-<span id="header-n33"></span><h4>Software<a class="headerlink" href="#software" title="Permalink to this headline">¶</a></h4>
-<ul class="simple">
-<li><p><a class="reference external" href="https://www.arduino.cc/en/main/software">Arduino IDE</a> - The tool
-for flashing the ESP32</p></li>
-</ul>
-</div>
-</div>
-<div class="section" id="connecting-the-hardware">
-<span id="header-n37"></span><h3>Connecting the hardware<a class="headerlink" href="#connecting-the-hardware" title="Permalink to this headline">¶</a></h3>
-<div class="figure align-default">
-<img alt="" src="https://github.com/PhilippFux/ESP32_CAN_Interface/blob/master/circuit_diagram.PNG" />
-</div>
-<p>Connect the following Pins from the ESP32 with the specified Pins of the
-CAN-Transceiver</p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 29%" />
-<col style="width: 18%" />
-<col style="width: 54%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p>ESP32</p></th>
-<th class="head"><p>CAN-Transceiver</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>3.3 Volt</p></td>
-<td><p>3V3</p></td>
-<td><p>3V3</p></td>
-</tr>
-<tr class="row-odd"><td><p>Ground</p></td>
-<td><p>GND</p></td>
-<td><p>GND</p></td>
-</tr>
-<tr class="row-even"><td><p>CTX</p></td>
-<td><p>GPIO5</p></td>
-<td><p>CTX</p></td>
-</tr>
-<tr class="row-odd"><td><p>CRX</p></td>
-<td><p>GPIO4</p></td>
-<td><p>CRX</p></td>
-</tr>
-</tbody>
-</table>
-<p>Connect the following Pins from the CAN-Transceiver with the specified
-Pins of the D-SUB connector</p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 21%" />
-<col style="width: 39%" />
-<col style="width: 39%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p>CAN-Transceiver</p></th>
-<th class="head"><p>D-SUB connector</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>CAN High</p></td>
-<td><p>CANH</p></td>
-<td><p>Pin 7</p></td>
-</tr>
-<tr class="row-odd"><td><p>CAN Low</p></td>
-<td><p>CANL</p></td>
-<td><p>Pin 2</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="install-and-configure-the-arduino-ide">
-<span id="header-n77"></span><h3>Install and configure the Arduino IDE<a class="headerlink" href="#install-and-configure-the-arduino-ide" title="Permalink to this headline">¶</a></h3>
-<ol class="arabic simple">
-<li><p>Download and install the <a class="reference external" href="https://www.arduino.cc/en/main/software">Arduino
-IDE</a></p></li>
-<li><p>Open Preferences in the Arduino IDE ( File -&gt; Preferences )</p></li>
-<li><p>Include <a class="reference external" href="https://dl.espressif.com/dl/package">https://dl.espressif.com/dl/package</a><em>esp32</em>index.json
-under Additional Boards Manager URLs</p></li>
-<li><p>Open the Board Manager ( Tools -&gt; Board -&gt; Boards Manager… )</p></li>
-<li><p>Search for esp32 and install the esp32 by Espressif Systems</p></li>
-<li><p>Finish! The installation should be completed in a few seconds</p></li>
-</ol>
-</div>
-<div class="section" id="upload-the-project-to-the-esp32">
-<span id="header-n91"></span><h3>Upload the Project to the ESP32<a class="headerlink" href="#upload-the-project-to-the-esp32" title="Permalink to this headline">¶</a></h3>
-<p>Connect the ESP32 via USB with a Computer and follow the instructions</p>
-<ol class="arabic simple">
-<li><p>Open the Arduino IDE</p></li>
-<li><p>Choose a ESP32 Board ( Tools -&gt; Board -&gt; ESP32 Arduino)</p></li>
-<li><p>Choose the used port ( Tools -&gt; Port: -&gt; COMx )</p></li>
-<li><p>Download the Project and open the “CAN_Interface.ino” ( File -&gt;
-Open…)</p></li>
-<li><p>Press the Upload Button in the Arduino IDE</p></li>
-<li><p>If everything went as expected a “Done uploading.” message should
-appear</p></li>
-</ol>
-</div>
-</div>
-<div class="section" id="usage">
-<span id="header-n106"></span><h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="important-notice">
-<span id="header-n107"></span><h3>Important Notice<a class="headerlink" href="#important-notice" title="Permalink to this headline">¶</a></h3>
-<p>CAN-Interface is not suited for production purposes. It is not
-guaranteed that CAN-Frames will reach their destination or reach in the
-right order. Use the CAN-Interface only for purposes where packet loss
-is tolerable.</p>
-</div>
-<div class="section" id="example">
-<span id="header-n109"></span><h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="preparation">
-<span id="header-n110"></span><h4>Preparation<a class="headerlink" href="#preparation" title="Permalink to this headline">¶</a></h4>
-<ul class="simple">
-<li><p>Connect the SUB-D connector from the CAN-Interface with a CAN-Bus</p></li>
-<li><p>Make a Wi-Fi connection between a Computer and the access point of
-the CAN-Interface</p></li>
-<li><p>To start the communication with the CAN-Interface send an
-initialization message to the UDP-Socket</p></li>
-</ul>
-</div>
-<div class="section" id="sending">
-<span id="header-n118"></span><h4>Sending<a class="headerlink" href="#sending" title="Permalink to this headline">¶</a></h4>
-<ol class="arabic">
-<li><p>Open an UDP-Socket</p></li>
-<li><p>Build a Cannelloni Data Package containing the CAN-Frames to send
-(Header + encoded CAN-Frames)</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CANNELLONIDataPacket</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Header for Cannelloni Data Packet</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">op_code</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">seq_no</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-</pre></div>
-</div>
-</li>
-<li><p>Send the Cannelloni Data Package via UDP to the CAN-Interface</p></li>
-</ol>
-</div>
-<div class="section" id="receiving">
-<span id="header-n127"></span><h4>Receiving<a class="headerlink" href="#receiving" title="Permalink to this headline">¶</a></h4>
-<ol class="arabic simple">
-<li><p>Open an UDP-Socket</p></li>
-<li><p>Receive the UDP-Packages sent from the CAN-Interface</p></li>
-<li><p>Unpack the CAN-Frames using the Cannelloni Data Package</p></li>
-<li><p>Decode the CAN-Frames</p></li>
-</ol>
-</div>
-</div>
-</div>
-<div class="section" id="use-with-python-can">
-<span id="header-n137"></span><h2>Use with python-can<a class="headerlink" href="#use-with-python-can" title="Permalink to this headline">¶</a></h2>
-<p>The CAN-Interface can also be used with the library python-can which
-provides CAN support for Python.</p>
-<div class="section" id="header-n139">
-<span id="id1"></span><h3>Important Notice<a class="headerlink" href="#header-n139" title="Permalink to this headline">¶</a></h3>
-<p>In order to use the CAN-Interface with python-can, the library with
-support for the CAN-Interface has to be installed</p>
-<p><strong>TODO: Describe the use with python-can (entered in library? y/n)</strong></p>
-</div>
-</div>
-<div class="section" id="authors">
-<span id="header-n143"></span><h2>Authors<a class="headerlink" href="#authors" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p><strong>Philipp Fuxen</strong> - <em>Initial work</em> -
-<a class="reference external" href="https://github.com/PhilippFux">PhilippFux</a></p></li>
-</ul>
-</div>
-<div class="section" id="acknowledgments">
-<span id="header-n147"></span><h2>Acknowledgments<a class="headerlink" href="#acknowledgments" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p><strong>cannelloni</strong> - <em>SocketCAN over Ethernet tunnel</em> -
-<a class="reference external" href="https://github.com/mguentner/cannelloni">mguentner/cannelloni</a></p></li>
-</ul>
-</div>
 </div>
 
 
