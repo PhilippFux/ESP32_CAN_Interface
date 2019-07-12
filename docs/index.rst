@@ -11,5 +11,5 @@ Contents:
 	Getting Started
 	Usage 
 	Use with python-can
-	Authors
+	Author
 	Acknowledgments
