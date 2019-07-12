@@ -5,7 +5,7 @@ Usage
 .. _header-n107:
 
 Important Notice 
-~~~~~~~~~~~~~~~~~
+----------------
 
 CAN-Interface is not suited for production purposes. It is not
 guaranteed that CAN-Frames will reach their destination or reach in the
@@ -15,7 +15,7 @@ is tolerable.
 .. _header-n109:
 
 Example
-~~~~~~~
+-------
 
 .. _header-n110:
 
