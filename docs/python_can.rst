@@ -1,5 +1,6 @@
+===================
 Use with python-can
--------------------
+===================
 
 The CAN-Interface can also be used with the library python-can which
 provides CAN support for Python.

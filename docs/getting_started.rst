@@ -1,5 +1,6 @@
+===============
 Getting Started
----------------
+===============
 
 These following instructions will help you to install and run the
 project on the ESP32 for development and testing purposes.
