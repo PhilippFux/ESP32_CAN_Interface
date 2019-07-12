@@ -3,8 +3,13 @@
 
 CAN-Interface ESP32
 ===================
+Contents:
+
 .. toctree::
 	:maxdepth: 2
-	:glob:
 	
-	*
+	Getting Started
+	Usage 
+	Use with python-can
+	Authors
+	Acknowledgments
