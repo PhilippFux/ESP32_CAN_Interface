@@ -5,9 +5,7 @@ CAN-Interface ESP32!
 ====================
 .. toctree::
 	:maxdepth: 2
-	:glob:
-	
-	*
+	:caption: Contents:
 
 .. _header-n0:
 
