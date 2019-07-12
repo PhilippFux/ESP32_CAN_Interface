@@ -3,7 +3,24 @@
 
 CAN-Interface ESP32
 ===================
-Contents:
+
+Wireless CAN-Interface for the ESP32 by Espressif. 
+Which uses the cannelloni protocol to send CAN-Frames via UDP over an Wi-Fi tunnel. 
+
+Features
+--------
+- CAN-Frame accumulation in a UDP-Package
+- send and receive CAN-Frames from a connected CAN-Bus
+- CAN Driver configuration 
+- Arbitration ID filter (hardware and software)
+- python-can support
+- CAN-FD support 
+- UDP support 
+- [Documentation](
+
+
+Contents
+--------
 
 .. toctree::
 	:maxdepth: 2
