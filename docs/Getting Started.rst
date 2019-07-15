@@ -39,7 +39,8 @@ Software
 Connecting the hardware
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-.. image:: https://github.com/PhilippFux/ESP32_CAN_Interface/blob/master/circuit_diagram.PNG
+.. image:: https://user-images.githubusercontent.com/49685484/61203591-1a489300-a6eb-11e9-91c2-b7c0e92b0e2e.PNG
+	:alt:
 
 Connect the following Pins from the ESP32 with the specified Pins of the
 CAN-Transceiver
