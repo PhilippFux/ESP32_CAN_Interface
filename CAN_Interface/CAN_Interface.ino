@@ -13,6 +13,8 @@
 #define SERIAL_BAUDRATE 115200
 #define SSID "Tagliatelle"
 #define PSWD "123456789"
+#define DEFAULT_CAN_BITRATE 500000
+#define DEFAULT_CAN_MODE 0
 
 #define __USE_HTTP_CONFIG__
 #define __USE_WEBSOCKET_CONFIG__
@@ -25,7 +27,7 @@
 #define WEBSOCKET_PORT 81u
 
 #ifdef __USE_WEBSOCKET_CONFIG__
-#include <WebSocketsServer.h>  // https://github.com/Links2004/arduinoWebSockets
+#include <WebSocketServer.h> // https://github.com/morrissinger/ESP8266-Websocket
 #include <ArduinoJson.h>  // Version 5
 #endif
 
@@ -46,8 +48,8 @@ struct cannelloni_config_t {
     int start_id;
     int end_id;
 } config;
-bool configurated = false;
 
+bool can_started = false;
 
 /* ------------ TIMER ------------ */
 volatile int interrupt_counter;
@@ -211,7 +213,8 @@ void handle_recv_message(String message) {
     Serial.println(config.end_id);
 
     Serial.println("------------------------------");
-    configurated = true;
+    setup_can_driver(&config);
+
 }
 
 void websocket_recv() {
@@ -290,8 +293,6 @@ void setup_ap() {
     ap_ip = WiFi.softAPIP();
     Serial.println("AP IP-Address: ");
     Serial.println(ap_ip);
-
-    // wifiServer.begin(); // TODO: needed?
 }
 
 /* ------------ CAN driver ------------ */
@@ -400,19 +401,27 @@ uint32_t calc_acceptance_mask(uint32_t start_id, uint32_t end_id, bool is_extend
 }
 
 void setup_can_driver(cannelloni_config_t *config) {
-  can_filter_config_t filter_config;
-  /* DEFAULT
-  can_general_config_t general_config = CAN_GENERAL_CONFIG((gpio_num_t)GPIO_NUM_5, (gpio_num_t)GPIO_NUM_4, CAN_MODE_NORMAL);
-  can_timing_config_t timing_config = CAN_TIMING_CONFIG_500KBITS();
-  can_filter_config_t filter_config = CAN_FILTER_CONFIG_ACCEPT_ALL();
-  */
-  while(!configurated){
-    delay(50);
+  esp_err_t error;
+  Serial.println("A1\n");
+  if (can_started)
+  {
+    can_started = false;  
+    error = can_stop();
+    
+    Serial.println("A1.2\n");
+    delay(100);
+    error = can_driver_uninstall();
+    delay(100);
+    Serial.println("A1.3\n");
+    
   }
-
+  can_filter_config_t filter_config;
+  Serial.println("A2\n");
+  
   can_general_config_t general_config = CAN_GENERAL_CONFIG(GPIO_NUM_5, GPIO_NUM_4, config->can_mode);
   can_timing_config_t timing_config = config->bitrate;
-  
+  Serial.println("A3\n");
+
   if (config->filter) {
     unsigned int acceptance_code = config->start_id;
     unsigned int acceptance_mask = calc_acceptance_mask(config->start_id, config->end_id, config->is_extended);
@@ -422,21 +431,27 @@ void setup_can_driver(cannelloni_config_t *config) {
     filter_config = CAN_FILTER_CONFIG_ACCEPT_ALL();
   }
   
-  esp_err_t error;
   error = can_driver_install(&general_config, &timing_config, &filter_config);
+  Serial.println("A4\n");
   if (error == ESP_OK) {
     ESP_LOGI(TAG, "Diver install was successful");
   }
   else {
     ESP_LOGE(TAG, "Driver install failed");
+    Serial.println("Driver install failed");
+    Serial.println(error);
     return;
   }
+  Serial.println("A5\n");
 
   // start CAN driver
   error = can_start();
+  Serial.println("A6\n");
+
   if (error == ESP_OK) {
     Serial.println("Driver start...");
     ESP_LOGI(TAG, "Driver start was successful");
+    can_started = true;
   }
   else {
     ESP_LOGE(TAG, "Driver start failed");
@@ -546,7 +561,7 @@ void cannelloni_can_queue() {
         queue_size = uxQueueMessagesWaiting(can_rx_queue_handle);
         if ((queue_size >= 12) || (event_is_present() && queue_size > 0)) {  //TODO: best order for more performance 
             i = 0;
-            while (queue_size > 0) {
+            while (queue_size > 0 && can_started) {
                 xQueueReceive(can_rx_queue_handle, &can_message, portMAX_DELAY);
                 can_messages[i] = can_message;
 
@@ -581,25 +596,12 @@ void cannelloni_can_main() {
     int packet_size;
 
     while (true) {
+      if(can_started)
+      {
         error = can_receive(&can_message, (1000 / portTICK_PERIOD_MS));
         if (error == ESP_OK) {
             ESP_LOGI(ESP_TAG, "CAN Message received");
             xQueueSend(can_rx_queue_handle, (void *) &can_message, portMAX_DELAY);
-            /*packet_size = cannelloni_build_packet(udp_tx_packet_buf, &can_message, 1);
-
-        if (packet_size < 0) {
-        Serial.println("cannelloni_build_packet failed");
-        ESP_LOGW(ESP_TAG, "cannelloni_build_packet failed");
-        }
-
-        int sent = sendto(udp_socket, udp_tx_packet_buf, packet_size, 0, (struct sockaddr*) &remote_address, sizeof(remote_address));
-        if (sent < 0) {
-        ESP_LOGW(ESP_TAG, "sendto: %s", strerror(errno));
-        }
-        else {
-        //ESP_LOGI(ESP_TAG, ("UDP Message (%d) sent to %08x:%d", packet_size,
-        //ntohl(udp.client.sin_addr.s_addr), ntohs(udp.sin_port)));
-        }*/
         }
         else if (error == ESP_ERR_TIMEOUT) {
         }
@@ -607,6 +609,7 @@ void cannelloni_can_main() {
             ESP_LOGE(ESP_TAG, "CAN message received failed");
             return;
         }
+    }
     }
 }
 
@@ -789,9 +792,21 @@ void cannelloni_init() {
 }
 
 
+/**/
+void init_default(void)
+{
+    set_bitrate(&config, DEFAULT_CAN_BITRATE);
+    set_can_mode(&config, DEFAULT_CAN_MODE);
+    config.filter = 0;
+    config.is_extended = 0;
+    config.start_id = 0;
+    config.end_id = 2047;
+}
+
 /* ------------ MAIN ------------ */
 void setup() {
     Serial.begin(SERIAL_BAUDRATE);
+    init_default();
     setup_ap();
     setup_socket();
 #ifdef __USE_HTTP_CONFIG__
@@ -801,12 +816,12 @@ void setup() {
 #ifdef __USE_WEBSOCKET_CONFIG__
     websocket_start();
 #endif
-    setup_can_driver(&config);
+
     setup_timer();
     cannelloni_init();
     cannelloni_start();
 }
 
 void loop() {
-    //delay(200);
+    delay(200);
 }
