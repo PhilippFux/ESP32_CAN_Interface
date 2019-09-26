@@ -1,4 +1,5 @@
 #include <WiFi.h>
+#include <EEPROM.h>
 #include <WiFiUdp.h>
 #include <driver/can.h>
 #include <driver/gpio.h>
@@ -87,6 +88,62 @@ void setup_timer() {
     timerAlarmWrite(send_udp_timer, 30000, false);
     timerAlarmEnable(send_udp_timer);
 }
+
+/* ---------- NVM /EEPROM Handling ---------------*/
+bool updateflag = false;
+void readNvm()
+{
+  struct cannelloni_config_t tempConfig;
+  uint8_t checksum = 0;
+  uint8_t nvChecksum = 0;
+  uint8_t temp = 0;
+  
+  int i;
+
+  for(i=0; i<sizeof(struct cannelloni_config_t);i++)
+  {
+        temp = EEPROM.read(i);
+        *(reinterpret_cast<uint8_t*>(&tempConfig)+i) = temp;
+        checksum += temp;
+  }    
+
+  checksum ++;
+  nvChecksum = EEPROM.read(i);
+  if(checksum == nvChecksum)
+  {
+        memcpy(&config, &tempConfig, sizeof(struct cannelloni_config_t));
+        Serial.println("NVM checksum ok");
+        
+  }  
+  else
+  {
+      updateflag = true; // force write nvm 
+        Serial.println("NVM checksum NOK // first startup");
+        Serial.println(nvChecksum);
+        Serial.println(checksum);
+  }
+}
+
+
+void writeNvm()
+{
+  uint8_t checksum = 0;
+  unsigned char temp = 0;
+  int i=0;
+   
+  for(i=0; i<sizeof(struct cannelloni_config_t);i++)
+  {
+
+      temp = *(reinterpret_cast<uint8_t *>(&config)+i); 
+      EEPROM.write(i, temp);
+      checksum += temp;
+  }
+  checksum ++;
+  EEPROM.write(i, checksum);
+  EEPROM.commit();
+}
+/* ---------- NVM /EEPROM Handling ---------------*/
+
 /* ------------ HTTP ------------- */
 #ifdef __USE_HTTP_CONFIG__
 const char* html =
@@ -213,6 +270,8 @@ void handle_recv_message(String message) {
     Serial.println(config.end_id);
 
     Serial.println("------------------------------");
+    updateflag = true;
+    //writeNvm();
     setup_can_driver(&config);
 
 }
@@ -402,25 +461,18 @@ uint32_t calc_acceptance_mask(uint32_t start_id, uint32_t end_id, bool is_extend
 
 void setup_can_driver(cannelloni_config_t *config) {
   esp_err_t error;
-  Serial.println("A1\n");
   if (can_started)
   {
     can_started = false;  
     error = can_stop();
-    
-    Serial.println("A1.2\n");
     delay(100);
     error = can_driver_uninstall();
     delay(100);
-    Serial.println("A1.3\n");
-    
   }
   can_filter_config_t filter_config;
-  Serial.println("A2\n");
   
   can_general_config_t general_config = CAN_GENERAL_CONFIG(GPIO_NUM_5, GPIO_NUM_4, config->can_mode);
   can_timing_config_t timing_config = config->bitrate;
-  Serial.println("A3\n");
 
   if (config->filter) {
     unsigned int acceptance_code = config->start_id;
@@ -432,7 +484,7 @@ void setup_can_driver(cannelloni_config_t *config) {
   }
   
   error = can_driver_install(&general_config, &timing_config, &filter_config);
-  Serial.println("A4\n");
+
   if (error == ESP_OK) {
     ESP_LOGI(TAG, "Diver install was successful");
   }
@@ -442,11 +494,9 @@ void setup_can_driver(cannelloni_config_t *config) {
     Serial.println(error);
     return;
   }
-  Serial.println("A5\n");
 
   // start CAN driver
   error = can_start();
-  Serial.println("A6\n");
 
   if (error == ESP_OK) {
     Serial.println("Driver start...");
@@ -801,6 +851,9 @@ void init_default(void)
     config.is_extended = 0;
     config.start_id = 0;
     config.end_id = 2047;
+    
+    EEPROM.begin(sizeof(config) + 1);
+    readNvm();
 }
 
 /* ------------ MAIN ------------ */
@@ -816,12 +869,18 @@ void setup() {
 #ifdef __USE_WEBSOCKET_CONFIG__
     websocket_start();
 #endif
-
+    setup_can_driver(&config);
     setup_timer();
     cannelloni_init();
     cannelloni_start();
 }
 
 void loop() {
-    delay(200);
+  if ( updateflag )
+  {
+      writeNvm();
+      Serial.print("Nvm written ");      
+      updateflag = false;
+  }
+  delay(200);
 }
